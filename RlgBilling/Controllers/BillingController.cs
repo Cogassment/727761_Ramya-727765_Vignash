@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Data.SqlClient;
@@ -29,49 +29,46 @@ namespace RlgBilling.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
-                using (SqlConnection con = new SqlConnection(constr))
+                if (AssociateIDExists(billingModel.AssociateID) != 1)
                 {
-                    string getQuery= "select*from BillingTable where AssociateID =" + billingModel.AssociateID;
-                    string query = "Insert into BillingTable(ProjectID,ProjectName,ManagerName,AssociateID,AssociateName,AllocationPercent,OnOff,RateCard,BillableDays,LeaveDays,Amount,Comments)VALUES(@ProjectID,@ProjectName,@ManagerName,@AssociateID,@AssociateName,@AllocationPercent,@OnOff,@RateCard,@BillableDays,@LeaveDays,@Amount,@Comments)";
-
-                    using (SqlCommand cmd = new SqlCommand(query))
+                    string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
+                    using (SqlConnection con = new SqlConnection(constr))
                     {
-                        cmd.Connection = con;
-                        con.Open();
-                        cmd.Parameters.AddWithValue("@ProjectID", billingModel.ProjectID);
-                        cmd.Parameters.AddWithValue("@ProjectName", billingModel.ProjectName);
-                        cmd.Parameters.AddWithValue("@ManagerName", billingModel.ManagerName);
-                        cmd.Parameters.AddWithValue("@AssociateID", billingModel.AssociateID);
-                        cmd.Parameters.AddWithValue("@AssociateName", billingModel.AssociateName);
-                        cmd.Parameters.AddWithValue("@AllocationPercent", billingModel.AllocationPercent);
-                        cmd.Parameters.AddWithValue("@OnOff", billingModel.OnOff);
-                        cmd.Parameters.AddWithValue("@RateCard", billingModel.RateCard);
-                        cmd.Parameters.AddWithValue("@BillableDays", billingModel.BillableDays);
-                        cmd.Parameters.AddWithValue("@LeaveDays", billingModel.LeaveDays);
-                        cmd.Parameters.AddWithValue("@Amount", billingModel.Amount);
-                        cmd.Parameters.AddWithValue("@Comments", billingModel.Comments);
-                        cmd.ExecuteNonQuery();
+                        //string getQuery = "select*from BillingTable where AssociateID =" + billingModel.AssociateID;
+                        string query = "Insert into BillingTable(ProjectID,ProjectName,ManagerName,AssociateID,AssociateName,AllocationPercent,OnOff,RateCard,BillableDays,LeaveDays,Amount,Comments)VALUES(@ProjectID,@ProjectName,@ManagerName,@AssociateID,@AssociateName,@AllocationPercent,@OnOff,@RateCard,@BillableDays,@LeaveDays,@Amount,@Comments)";
 
-                        con.Close();
-
+                        using (SqlCommand cmd = new SqlCommand(query))
+                        {
+                            cmd.Connection = con;
+                            con.Open();
+                            cmd.Parameters.AddWithValue("@ProjectID", billingModel.ProjectID);
+                            cmd.Parameters.AddWithValue("@ProjectName", billingModel.ProjectName);
+                            cmd.Parameters.AddWithValue("@ManagerName", billingModel.ManagerName);
+                            cmd.Parameters.AddWithValue("@AssociateID", billingModel.AssociateID);
+                            cmd.Parameters.AddWithValue("@AssociateName", billingModel.AssociateName);
+                            cmd.Parameters.AddWithValue("@AllocationPercent", billingModel.AllocationPercent);
+                            cmd.Parameters.AddWithValue("@OnOff", billingModel.OnOff);
+                            cmd.Parameters.AddWithValue("@RateCard", billingModel.RateCard);
+                            cmd.Parameters.AddWithValue("@BillableDays", billingModel.BillableDays);
+                            cmd.Parameters.AddWithValue("@LeaveDays", billingModel.LeaveDays);
+                            cmd.Parameters.AddWithValue("@Amount", billingModel.Amount);
+                            cmd.Parameters.AddWithValue("@Comments", billingModel.Comments);
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                           
+                        }
 
                     }
-
-                }
-                ViewBag.message = "User Saved successfully";
-                ModelState.Clear();
-
-
-                //return Content("Saved successfully");
-
+                    ViewBag.message = "User Saved successfully";
+                    ModelState.Clear();
+                    }
+                else
+                {
+                    ViewBag.message = "Id already exist";
+                }                
+                
             }
             return View();
-            //else
-            //{
-            //    ViewBag.message = "Enter a valid data!!!!";
-            //    return View(); //}
 
         }
 
@@ -159,9 +156,31 @@ namespace RlgBilling.Controllers
             return Content("Success");
         }
 
+        private int AssociateIDExists(int associateId)
+        {
+            int isUserExists = 0;
+            string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                string userExistQuery = "SELECT COUNT(*) FROM dbo.BillingTable WHERE AssociateID=" + associateId;
+                using (SqlCommand cmd = new SqlCommand(userExistQuery))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    isUserExists = Convert.ToInt32(cmd.ExecuteScalar());
+                    con.Close();
+                }
+            }
+            return isUserExists;
+        }
+
     }
 
 }
+
+
+
+
 
 
 
