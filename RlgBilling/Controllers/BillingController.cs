@@ -34,7 +34,7 @@ namespace RlgBilling.Controllers
                     string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
                     using (SqlConnection con = new SqlConnection(constr))
                     {
-                        //string getQuery = "select*from BillingTable where AssociateID =" + billingModel.AssociateID;
+                       
                         string query = "Insert into BillingTable(ProjectID,ProjectName,ManagerName,AssociateID,AssociateName,AllocationPercent,OnOff,RateCard,BillableDays,LeaveDays,Amount,Comments)VALUES(@ProjectID,@ProjectName,@ManagerName,@AssociateID,@AssociateName,@AllocationPercent,@OnOff,@RateCard,@BillableDays,@LeaveDays,@Amount,@Comments)";
 
                         using (SqlCommand cmd = new SqlCommand(query))
@@ -55,18 +55,18 @@ namespace RlgBilling.Controllers
                             cmd.Parameters.AddWithValue("@Comments", billingModel.Comments);
                             cmd.ExecuteNonQuery();
                             con.Close();
-                           
+
                         }
 
                     }
                     ViewBag.message = "User Saved successfully";
                     ModelState.Clear();
-                    }
+                }
                 else
                 {
                     ViewBag.message = "Id already exist";
-                }                
-                
+                }
+
             }
             return View();
 
@@ -106,29 +106,29 @@ namespace RlgBilling.Controllers
             SqlCommand cmd = new SqlCommand("Select * from BillingTable", con);
             cmd.ExecuteNonQuery();
             List<BillingModel> list = new List<BillingModel>();
-            BillingModel m;                                                       /* m=object*/
-            int r = 0;                                                            /*r=Localvariable*/
+            BillingModel billingModel;                                                       
+            int rate = 0;                                                            
             using (SqlDataReader read = cmd.ExecuteReader())
             {
                 while (read.Read())
                 {
-                    m = new BillingModel();
-                    m.ProjectID = int.Parse(read["ProjectID"].ToString());
-                    m.ProjectName = read["ProjectName"].ToString();
-                    m.ManagerName = read["ManagerName"].ToString();
-                    m.AssociateID = int.Parse(read["AssociateID"].ToString());
-                    m.AssociateName = read["AssociateName"].ToString();
-                    m.AllocationPercent = int.Parse(read["AllocationPercent"].ToString());
-                    m.OnOff = read["OnOff"].ToString();
-                    m.RateCard = int.Parse(read["RateCard"].ToString());
-                    m.BillableDays = int.Parse(read["BillableDays"].ToString());
-                    r = m.RateCard * m.BillableDays;
-                    m.LeaveDays = int.Parse(read["LeaveDays"].ToString());
-                    m.Amount = Convert.ToInt32(r);
-                    m.Amount = r;
-                    m.Comments = read["Comments"].ToString();
+                    billingModel = new BillingModel();
+                    billingModel.ProjectID = int.Parse(read["ProjectID"].ToString());
+                    billingModel.ProjectName = read["ProjectName"].ToString();
+                    billingModel.ManagerName = read["ManagerName"].ToString();
+                    billingModel.AssociateID = int.Parse(read["AssociateID"].ToString());
+                    billingModel.AssociateName = read["AssociateName"].ToString();
+                    billingModel.AllocationPercent = int.Parse(read["AllocationPercent"].ToString());
+                    billingModel.OnOff = read["OnOff"].ToString();
+                    billingModel.RateCard = int.Parse(read["RateCard"].ToString());
+                    billingModel.BillableDays = int.Parse(read["BillableDays"].ToString());
+                    rate = billingModel.RateCard * billingModel.BillableDays;
+                    billingModel.LeaveDays = int.Parse(read["LeaveDays"].ToString());
+                    billingModel.Amount = Convert.ToInt32(rate);
+                    billingModel.Amount = rate;
+                    billingModel.Comments = read["Comments"].ToString();
 
-                    list.Add(m);
+                    list.Add(billingModel);
 
                 }
                 con.Close();
@@ -138,10 +138,10 @@ namespace RlgBilling.Controllers
         }
         public ActionResult ExportToExcel()
         {
-            var data = GetBillingDetails();
-            var gv = new GridView();                                /*gv=gridview*/
-            gv.DataSource = this.GetBillingDetails();
-            gv.DataBind();
+            var billingdata = GetBillingDetails();
+            var gridview = new GridView();                                
+            gridview.DataSource = this.GetBillingDetails();
+            gridview.DataBind();
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename=BillingDetails.xls");
@@ -149,7 +149,7 @@ namespace RlgBilling.Controllers
             Response.Charset = "";
             StringWriter objStringWriter = new StringWriter();
             HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
-            gv.RenderControl(objHtmlTextWriter);
+            gridview.RenderControl(objHtmlTextWriter);
             Response.Output.Write(objStringWriter.ToString());
             Response.Flush();
             Response.End();
@@ -177,10 +177,6 @@ namespace RlgBilling.Controllers
     }
 
 }
-
-
-
-
 
 
 
