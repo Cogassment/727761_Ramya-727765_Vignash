@@ -26,7 +26,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $(".btnsave").on("click", function () {
+            $(".buttonsave").on("click", function () {
 
                 var currentRow = this.parentNode.parentNode;
 
@@ -81,7 +81,7 @@
         }
 
         .intro {
-            background-color: #808080;
+            background-color: #de2424;
             font-family: 'Times New Roman';
             font-variant: small-caps;
             font-weight: lighter;
@@ -136,7 +136,6 @@
                     <tr>
 
                         <th class="col-sm-1 intro">ProjectID </th>
-                        @*<th class="col-sm-1" style="background-color:#808080;font-family:Cambria;font-variant: small-caps;font-weight:bolder;font-size: 15px;color: #ffffff;">ProjectID </th>*@
                         <th class="col-sm-1 intro">ProjectName </th>
                         <th class="col-sm-1 intro">ManagerName </th>
                         <th class="col-sm-1 intro">AssociateID </th>
@@ -182,20 +181,20 @@
 
                             </td>
                             <td>
-                                @Html.TextBoxFor(modelItem => item.BillableDays, new { @class = "tt", @onchange = "testfun(this)", @type = "number", style = "width:50px",min="0"})
+                                @Html.TextBoxFor(modelItem => item.BillableDays, new { @class = "tt", @onchange = "testfun(this)", @type = "number", style = "width:50px", min = "0" })
                             </td>
                             <td>
                                 @Html.TextBoxFor(modelItem => item.LeaveDays, new { @type = "number", style = "width:40px", min = "0" })
                             </td>
                             <td>
-                                @Html.TextBoxFor(modelItem => item.Amount, new { @class = "ss", @onchange = "testfun(this)", style = "width:50px", disabled="disabled"})
+                                @Html.TextBoxFor(modelItem => item.Amount, new { @class = "ss", @onchange = "testfun(this)", style = "width:50px", disabled = "disabled" })
                             </td>
                             <td>
                                 @Html.TextBoxFor(modelItem => item.Comments, new { style = "width:50px" })
                             </td>
                             <td>
 
-                                <input type="button" value="Save" id="btnsave" formaction="Save" class="btnsave Save btn btn-success" />
+                                <input type="button" value="Save" id="buttonsave" formaction="Save" class="buttonsave Save btn btn-success" />
                             </td>
 
                         </tr>
