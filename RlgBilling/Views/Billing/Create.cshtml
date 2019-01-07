@@ -1,7 +1,7 @@
 @model RlgBilling.Models.BillingModel
 
 @{
-    /**/
+
 
     Layout = null;
 }
@@ -40,14 +40,17 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div align="center" style="color:#fcd708;font-family:'Felix Titling';font-size:25px;font-variant: small-caps;font-weight:bolder;">
-            <script type="text/javascript">
-
-            window.onload = function () {
-                alert("@ViewBag.Message");
-            };
-            </script>
+            @ViewBag.Message
           
         </div>
+        <div style="position:absolute;top:0">
+            <div class="header__site-logo desktopuser">
+                <a href="/" tabindex="2">
+                    <img class="logo-sm d-block d-lg-none" src="~/images/RLG.JPG" onerror="this.src = '~/images/RLG.JPG'" alt="Home - Royal London">
+                </a>
+            </div>
+        </div>
+
         <div class="container" align="center">
 
             <h1 style="color:black;font-family:'Felix Titling';font-size:35px;font-variant: small-caps;font-weight:bolder;">Create</h1>
@@ -58,7 +61,7 @@
                 <tr>
 
                     <td class="style">ProjectID</td>
-                    <td>@Html.TextBoxFor(model => model.ProjectID, new { @type = "number", required = "required" })</td>
+                    <td>@Html.TextBoxFor(model => model.ProjectID, new { @type = "number", required = "required", min = "0" })</td>
                 <tr>
                     <td></td>
                     <td class="style1">@Html.ValidationMessageFor(model => model.ProjectID, "", new { @class = "text-danger" })</td>
@@ -164,10 +167,11 @@
 
     <div class="container" align="center">
         <p>
-            <a href="/" style="color: #1360ec;font-family:'Felix Titling';font-size:15px;font-variant: small-caps;font-weight:bolder;">Back to List</a>
+            <a href="/" style="color: #1360ec;font-family:'Lucida Bright';font-size:15px;font-variant: small-caps;font-weight:bolder;">Back to List</a>
         </p>
-
+        <p>
+            <a style="color:ghostwhite;font-family:'Lucida Bright';font-size:15px;">All the fields are mandatory</a>
+        </p>
     </div>
 </body>
 </html>
-
