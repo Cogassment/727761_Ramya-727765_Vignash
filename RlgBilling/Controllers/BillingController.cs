@@ -11,21 +11,18 @@ using System.Web.UI;
 namespace RlgBilling.Controllers
 {
     public class BillingController : Controller
-
     {
         // GET: Billing
         public ActionResult Index()
         {
             return View(GetBillingDetails());
         }
-
         public ActionResult Create()
         {
             return View();
         }
         [HttpPost]
         public ActionResult Create(BillingModel billingModel)
-
         {
             if (ModelState.IsValid)
             {
@@ -34,7 +31,7 @@ namespace RlgBilling.Controllers
                     string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
                     using (SqlConnection con = new SqlConnection(constr))
                     {
-                       
+
                         string query = "Insert into BillingTable(ProjectID,ProjectName,ManagerName,AssociateID,AssociateName,AllocationPercent,OnOff,RateCard,BillableDays,LeaveDays,Amount,Comments)VALUES(@ProjectID,@ProjectName,@ManagerName,@AssociateID,@AssociateName,@AllocationPercent,@OnOff,@RateCard,@BillableDays,@LeaveDays,@Amount,@Comments)";
 
                         using (SqlCommand cmd = new SqlCommand(query))
@@ -66,18 +63,12 @@ namespace RlgBilling.Controllers
                 {
                     ViewBag.message = "Id already exist";
                 }
-
             }
             return View();
-
         }
-
-
         [HttpPost]
         public ActionResult Save(int BillableDays, int LeaveDays, int Amount, int AssociateID, string Comments)
         {
-
-
             string query = "update BillingTable set BillableDays = '" + BillableDays + "', LeaveDays = " + LeaveDays + " , Amount = '" + Amount + "',Comments = '" + Comments + "' where AssociateID =" + AssociateID;
             string constr = @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\727765\source\repos\RlgBilling\RlgBilling\App_Data\RlgDb.mdf; Integrated Security = True";
             using (SqlConnection con = new SqlConnection(constr))
@@ -91,14 +82,10 @@ namespace RlgBilling.Controllers
 
                 }
                 con.Close();
-
             }
 
             return Json("Details saved successfully.");
         }
-
-
-
         private IList<BillingModel> GetBillingDetails()
         {
             SqlConnection con = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\727765\source\repos\RlgBilling\RlgBilling\App_Data\RlgDb.mdf; Integrated Security = True");
@@ -106,8 +93,8 @@ namespace RlgBilling.Controllers
             SqlCommand cmd = new SqlCommand("Select * from BillingTable", con);
             cmd.ExecuteNonQuery();
             List<BillingModel> list = new List<BillingModel>();
-            BillingModel billingModel;                                                       
-            int rate = 0;                                                            
+            BillingModel billingModel;
+            int rate = 0;
             using (SqlDataReader read = cmd.ExecuteReader())
             {
                 while (read.Read())
@@ -127,19 +114,16 @@ namespace RlgBilling.Controllers
                     billingModel.Amount = Convert.ToInt32(rate);
                     billingModel.Amount = rate;
                     billingModel.Comments = read["Comments"].ToString();
-
                     list.Add(billingModel);
-
                 }
                 con.Close();
             }
-
             return list;
         }
         public ActionResult ExportToExcel()
         {
             var billingdata = GetBillingDetails();
-            var gridview = new GridView();                                
+            var gridview = new GridView();
             gridview.DataSource = this.GetBillingDetails();
             gridview.DataBind();
             Response.ClearContent();
@@ -155,7 +139,6 @@ namespace RlgBilling.Controllers
             Response.End();
             return Content("Success");
         }
-
         private int AssociateIDExists(int associateId)
         {
             int isUserExists = 0;
@@ -175,7 +158,6 @@ namespace RlgBilling.Controllers
         }
 
     }
-
 }
 
 
