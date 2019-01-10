@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations;
 namespace RlgBilling.Models
 {
     public class BillingModel
     {
-
         public int ProjectID { get; set; }
 
         [RegularExpression("^[a-zA-Z ]*$", ErrorMessage = " Only Alphabets are allowed")]
