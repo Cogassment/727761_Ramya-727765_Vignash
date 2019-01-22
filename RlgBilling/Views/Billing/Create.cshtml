@@ -24,7 +24,7 @@
         }
     </style>
 </head>
-<body style="background-color:#9c67de;color:white">
+<body style="background-color:#421853;color:white">
     @using (Html.BeginForm("Create", "Billing", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
@@ -41,11 +41,11 @@
             </div>
         </div>
         <div class="container" align="center">
-            <h1 style="color:black;font-family:'Felix Titling';font-size:35px;font-variant: small-caps;font-weight:bolder;">Create</h1>
-            <p style="color: white;box-shadow: 120px 550px 340px 330px black; font-family:'Felix Titling';font-variant: small-caps;font-weight:bolder;font-size: 25px;">Please enter your credentials</p>
+            <h1 style="color:white;font-family:'Felix Titling';font-size:35px;font-variant: small-caps;font-weight:bolder;">Create</h1>
+            <p style="color: white;box-shadow: 120px 550px 340px 330px #421853; font-family:'Felix Titling';font-variant: small-caps;font-weight:bolder;font-size: 25px;">Please enter your credentials</p>
             <table>
                 <tr>
-                    <td class="style">ProjectID</td>
+                    <td class="style">Project ID</td>
                     <td>@Html.TextBoxFor(model => model.ProjectID, new { @type = "number", required = "required", min = "0" })</td>
                 <tr>
                     <td></td>
@@ -55,7 +55,7 @@
                 </tr>
 
                 <tr>
-                    <td class="style">ProjectName</td>
+                    <td class="style">Project Name</td>
                     <td>
                         @Html.TextBoxFor(model => model.ProjectName, new { @class = "form-control", required = "required" })
                     </td>
@@ -68,7 +68,7 @@
                 </tr>
 
                 <tr>
-                    <td class="style">ManagerName</td>
+                    <td class="style">Manager Name</td>
                     <td>@Html.TextBoxFor(model => model.ManagerName, new { @class = "text", required = "required" }) </td>
                 </tr>
                 <tr>
@@ -78,7 +78,7 @@
                 </tr>
 
                 <tr>
-                    <td class="style">AssociateID</td>
+                    <td class="style">Associate ID</td>
                     <td>@Html.EditorFor(model => model.AssociateID, new { required = "required" }) </td>
                 </tr>
                 <tr>
@@ -88,7 +88,7 @@
                 </tr>
 
                 <tr>
-                    <td class="style">AssociateName</td>
+                    <td class="style">Associate Name</td>
                     <td>@Html.TextBoxFor(model => model.AssociateName, new { @class = "text", required = "required" }) </td>
 
                 <tr>
@@ -98,7 +98,7 @@
                 </tr>
 
                 <tr>
-                    <td class="style">AllocationPercent &nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td class="style">Allocation Percent &nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>@Html.TextBoxFor(model => model.AllocationPercent, new { @type = "number", required = "required" }) </td>
                 <tr>
                     <td></td>
@@ -117,7 +117,7 @@
                 </tr>
 
                 <tr>
-                    <td class="style">RateCard</td>
+                    <td class="style">Rate Card</td>
                     <td>@Html.TextBoxFor(model => model.RateCard, new { @type = "number", required = "required" }) </td>
 
                 <tr>
@@ -145,7 +145,7 @@
     }
     <div class="container" align="center">
         <p>
-            <a href="/" style="color: #1360ec;font-family:'Lucida Bright';font-size:15px;font-variant: small-caps;font-weight:bolder;">Back to List</a>
+            <a href="/" style="color:yellow;font-family:'Lucida Bright';font-size:15px;font-variant: small-caps;font-weight:bolder;">Back to List</a>
         </p>
         <p>
             <a style="color:ghostwhite;font-family:'Lucida Bright';font-size:15px;">All the fields are mandatory</a>
@@ -153,5 +153,3 @@
     </div>
 </body>
 </html>
-
-
