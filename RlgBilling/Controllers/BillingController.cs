@@ -8,12 +8,14 @@ using System.Web.UI.WebControls;
 using System.IO;
 using System.Web.UI;
 
+
+
 namespace RlgBilling.Controllers
 {
     public class BillingController : Controller
     {
         // GET: Billing
-        string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
+       
         public ActionResult Index()
         {
             return View(GetBillingDetails());
@@ -22,72 +24,102 @@ namespace RlgBilling.Controllers
         {
             return View();
         }
+        /// Summary
+        /// // Create Button, the following ActionResult will redriect to create page and on clicking create Button the details will be saved in database.
+        /// Summary
         [HttpPost]
         public ActionResult Create(BillingModel billingModel)
         {
             if (ModelState.IsValid)
             {
-                if (AssociateIDExists(billingModel.AssociateID) != 1)
+                if (AssociateIDExists(billingModel.AssociateID) != true)
                 {
-                    using (SqlConnection con = new SqlConnection(constr))
+                    try
                     {
-                        string query = "Insert into BillingTable(ProjectID,ProjectName,ManagerName,AssociateID,AssociateName,AllocationPercent,OnOff,RateCard,BillableDays,LeaveDays,Amount,Comments)VALUES(@ProjectID,@ProjectName,@ManagerName,@AssociateID,@AssociateName,@AllocationPercent,@OnOff,@RateCard,@BillableDays,@LeaveDays,@Amount,@Comments)";
+                        DBConnection dBConnection = new DBConnection();
+                        SqlConnection connection = dBConnection.con();
 
-                        using (SqlCommand cmd = new SqlCommand(query))
+
                         {
-                            cmd.Connection = con;
-                            con.Open();
-                            cmd.Parameters.AddWithValue("@ProjectID", billingModel.ProjectID);
-                            cmd.Parameters.AddWithValue("@ProjectName", billingModel.ProjectName);
-                            cmd.Parameters.AddWithValue("@ManagerName", billingModel.ManagerName);
-                            cmd.Parameters.AddWithValue("@AssociateID", billingModel.AssociateID);
-                            cmd.Parameters.AddWithValue("@AssociateName", billingModel.AssociateName);
-                            cmd.Parameters.AddWithValue("@AllocationPercent", billingModel.AllocationPercent);
-                            cmd.Parameters.AddWithValue("@OnOff", billingModel.OnOff);
-                            cmd.Parameters.AddWithValue("@RateCard", billingModel.RateCard);
-                            cmd.Parameters.AddWithValue("@BillableDays", billingModel.BillableDays);
-                            cmd.Parameters.AddWithValue("@LeaveDays", billingModel.LeaveDays);
-                            cmd.Parameters.AddWithValue("@Amount", billingModel.Amount);
-                            cmd.Parameters.AddWithValue("@Comments", billingModel.Comments);
-                            cmd.ExecuteNonQuery();
-                            con.Close();
+                            string query = "Insert into BillingTable(ProjectID,ProjectName,ManagerName,AssociateID,AssociateName,AllocationPercent,OnOff,RateCard,BillableDays,LeaveDays,Amount,Comments)VALUES(@ProjectID,@ProjectName,@ManagerName,@AssociateID,@AssociateName,@AllocationPercent,@OnOff,@RateCard,@BillableDays,@LeaveDays,@Amount,@Comments)";
+
+                            using (SqlCommand cmd = new SqlCommand(query))
+                            {
+                                cmd.Connection = connection;
+                                connection.Open();
+                                cmd.Parameters.AddWithValue("@ProjectID", billingModel.ProjectID);
+                                cmd.Parameters.AddWithValue("@ProjectName", billingModel.ProjectName);
+                                cmd.Parameters.AddWithValue("@ManagerName", billingModel.ManagerName);
+                                cmd.Parameters.AddWithValue("@AssociateID", billingModel.AssociateID);
+                                cmd.Parameters.AddWithValue("@AssociateName", billingModel.AssociateName);
+                                cmd.Parameters.AddWithValue("@AllocationPercent", billingModel.AllocationPercent);
+                                cmd.Parameters.AddWithValue("@OnOff", billingModel.OnOff);
+                                cmd.Parameters.AddWithValue("@RateCard", billingModel.RateCard);
+                                cmd.Parameters.AddWithValue("@BillableDays", billingModel.BillableDays);
+                                cmd.Parameters.AddWithValue("@LeaveDays", billingModel.LeaveDays);
+                                cmd.Parameters.AddWithValue("@Amount", billingModel.Amount);
+                                cmd.Parameters.AddWithValue("@Comments", billingModel.Comments);
+                                cmd.ExecuteNonQuery();
+                                connection.Close();
+                            }
                         }
+                    }
+                    catch (Exception)
+                    {
+                        ViewBag.message = "error";
+
                     }
                     ViewBag.message = "User Saved successfully";
                     ModelState.Clear();
+
                 }
                 else
                 {
-                   ViewBag.message = "Id already exist";
+                    ViewBag.message = "Id already exist";
                 }
             }
             return View();
         }
+        /// Summary
+        /// // On Click Save Button, the following ActionResult will Save the entered valid value in the database.
+        /// Summary
         [HttpPost]
         public ActionResult Save(int BillableDays, int LeaveDays, int Amount, int AssociateID, string Comments)
         {
             string query = "update BillingTable set BillableDays = '" + BillableDays + "', LeaveDays = " + LeaveDays + " , Amount = '" + Amount + "',Comments = '" + Comments + "' where AssociateID =" + AssociateID;
-            using (SqlConnection con = new SqlConnection(constr))
             {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand(query, con))
+                try
                 {
-                    cmd.Connection = con;
+                    DBConnection dBConnection = new DBConnection();
+                    SqlConnection connection = dBConnection.con();
+                    {
+                        connection.Open();
 
-                    cmd.ExecuteNonQuery();
+                        using (SqlCommand cmd = new SqlCommand(query, connection))
+                        {
+                            cmd.Connection = connection;
+
+                            cmd.ExecuteNonQuery();
+
+                        }
+                        connection.Close();
+                    }
+                }
+                catch (Exception)
+                {
+                    ViewBag.message = "error";
 
                 }
-                con.Close();
             }
-
             return Json("Details saved successfully.");
         }
         private IList<BillingModel> GetBillingDetails()
         {
-            using (SqlConnection con = new SqlConnection(constr))
+            DBConnection dBConnection = new DBConnection();
+            SqlConnection connection = dBConnection.con();
             {
-                con.Open();
-                SqlCommand cmd = new SqlCommand("Select * from BillingTable", con);
+                connection.Open();
+                SqlCommand cmd = new SqlCommand("Select * from BillingTable", connection);
                 cmd.ExecuteNonQuery();
                 List<BillingModel> list = new List<BillingModel>();
                 BillingModel billingModel;
@@ -113,14 +145,17 @@ namespace RlgBilling.Controllers
                         billingModel.Comments = read["Comments"].ToString();
                         list.Add(billingModel);
                     }
-                    con.Close();
+                    connection.Close();
                 }
-
                 return list;
             }
         }
+        /// Summary
+        /// // Export Button, the following ActionResult will export the data as Excel file.
+        /// Summary
         public ActionResult ExportToExcel()
         {
+
             var billingdata = GetBillingDetails();
             var gridview = new GridView();
             gridview.DataSource = this.GetBillingDetails();
@@ -138,25 +173,41 @@ namespace RlgBilling.Controllers
             Response.End();
             return Content("Success");
         }
-        private int AssociateIDExists(int associateId)
+        /// Summary
+        /// // To check Associate Id is already exist in database or Not.
+        /// Summary
+        private Boolean AssociateIDExists(int associateId)
         {
-            int isUserExists = 0;
-            using (SqlConnection con = new SqlConnection(constr))
+            Boolean isUserExists = false;
             {
-                string userExistQuery = "SELECT COUNT(*) FROM dbo.BillingTable WHERE AssociateID=" + associateId;
-                using (SqlCommand cmd = new SqlCommand(userExistQuery))
+                try
                 {
-                    cmd.Connection = con;
-                    con.Open();
-                    isUserExists = Convert.ToInt32(cmd.ExecuteScalar());
-                    con.Close();
+                    DBConnection dBConnection = new DBConnection();
+                    SqlConnection connection = dBConnection.con();
+                    {
+                        string userExistQuery = "SELECT COUNT(*) FROM dbo.BillingTable WHERE AssociateID=" + associateId;
+                        using (SqlCommand cmd = new SqlCommand(userExistQuery))
+                        {
+                            cmd.Connection = connection;
+                            connection.Open();
+                            isUserExists = Convert.ToBoolean(cmd.ExecuteScalar());
+                            connection.Close();
+                        }
+                    }
                 }
-            }
-            return isUserExists;
-        }
+                catch(Exception)
+                {
+                    ViewBag.message = "error";
 
+                }
+
+                return isUserExists;
+            }
+
+        }
     }
 }
+
 
 
 
